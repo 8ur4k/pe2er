@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import styles from "./App.module.css";
 import { createSignal } from "solid-js";
 import { onMount } from "solid-js";
-import Peer from "peerjs";
+import Peer, { MediaConnection } from "peerjs";
 
 enum CallStatus {
   IDLE,
@@ -17,10 +17,30 @@ function App() {
   let ringtone: HTMLAudioElement;
   let amogus: HTMLAudioElement;
 
+  let currentCall: MediaConnection;
+
   const [callStatus, setCallStatus] = createSignal<CallStatus>(CallStatus.IDLE);
+
+  function copyToClipboard(str: string) {
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+      return navigator.clipboard.writeText(str);
+    return Promise.reject("The Clipboard API is not available.");
+  }
 
   function pezerle() {
     setCallStatus(CallStatus.ON_CALL);
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        console.log("💥 ANSWERED CALL | " + callStatus());
+        currentCall.answer(stream); // Answer the call with an A/V stream.
+        currentCall.on("stream", (remoteStream) => {
+          auido1.srcObject = remoteStream;
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to get local stream", err);
+      });
   }
 
   const genRand = (len: number) => {
@@ -44,18 +64,7 @@ function App() {
     peer.on("call", (call) => {
       setCallStatus(CallStatus.INCOMING_CALL);
       console.log("💥 INCOMING CALL | " + callStatus());
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          console.log("💥 ANSWERED CALL | " + callStatus());
-          call.answer(stream); // Answer the call with an A/V stream.
-          call.on("stream", (remoteStream) => {
-            auido1.srcObject = remoteStream;
-          });
-        })
-        .catch((err) => {
-          console.error("Failed to get local stream", err);
-        });
+      currentCall = call;
     });
 
     setTimeout(() => {
@@ -92,9 +101,14 @@ function App() {
               placeholder="Connection link"
             />
           </div>
-          <input class={styles.clientSubmitButton} type="button" value="Copy" />
+          <input
+            onClick={() => copyToClipboard(currentLinkInput.value)}
+            class={styles.clientSubmitButton}
+            type="button"
+            value="Copy"
+          />
         </div>
-        {callStatus() == 1 && (
+        {callStatus() == CallStatus.INCOMING_CALL && (
           <div class={styles.copyLink}>
             <input
               class={styles.copyLinkButton}
