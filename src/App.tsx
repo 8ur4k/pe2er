@@ -53,7 +53,7 @@ function App() {
     const queryParams = new URLSearchParams(document.location.search);
     const callAdress = queryParams.get("to");
     const clientAddress = genRand(7);
-    let baseUrl = "http://127.0.0.1:3000/";
+    let baseUrl = "pe2er/";
     currentLinkInput.value = `${baseUrl}?to=${clientAddress}`;
     var peer = new Peer(clientAddress);
 
