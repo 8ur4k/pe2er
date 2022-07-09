@@ -1,4 +1,4 @@
-import logo from "./logo.svg";
+import logo from "~/logo.svg";
 import styles from "./App.module.css";
 import { createSignal } from "solid-js";
 import { onMount } from "solid-js";
@@ -120,7 +120,7 @@ function App() {
               ref={ringtone!}
               autoplay
               id="audio-ringtone"
-              src="/src/assets/ringtone.mp3"
+              src="/assets/ringtone.mp3"
             ></audio>
           </div>
         )}
@@ -133,7 +133,7 @@ function App() {
         ></audio>
         {callStatus() == 3 && (
           <div>
-            <audio ref={amogus!} autoplay src="/src/assets/amogus.mp3"></audio>
+            <audio ref={amogus!} autoplay src="/assets/amogus.mp3"></audio>
           </div>
         )}
       </div>
