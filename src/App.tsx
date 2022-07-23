@@ -124,6 +124,7 @@ function App() {
             ></audio>
           </div>
         )}
+
         <audio
           class={styles.dNone}
           ref={auido1!}
@@ -131,7 +132,7 @@ function App() {
           autoplay
           id="audio-1"
         ></audio>
-        {callStatus() == 3 && (
+        {callStatus() == CallStatus.ON_CALL && (
           <div>
             <audio ref={amogus!} autoplay src="/assets/amogus.mp3"></audio>
           </div>
